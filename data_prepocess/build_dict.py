@@ -94,14 +94,14 @@ f_dev_beh = os.path.join(data_path, "valid/behaviors.tsv")
 f_test_beh = os.path.join(data_path, "test/behaviors.tsv")
 
 print("Loading training beh")
-all_beh = pd.read_csv(f_train_beh, sep="\t", encoding="utf-8", names=["id", "uid", "time", "hist", "imp"])
+train_beh = pd.read_csv(f_train_beh, sep="\t", encoding="utf-8", names=["id", "uid", "time", "hist", "imp"])
 print("Loading dev beh")
 dev_beh = pd.read_csv(f_dev_beh, sep="\t", encoding="utf-8", names=["id", "uid", "time", "hist", "imp"])
-all_beh = pd.concat([all_beh, dev_beh], ignore_index=True)
+all_beh = pd.concat([train_beh, dev_beh], ignore_index=True)
 print("Loading testing beh")
 test_beh = pd.read_csv(f_test_beh, sep="\t", encoding="utf-8", names=["id", "uid", "time", "hist", "imp"])
 all_beh = pd.concat([all_beh, test_beh], ignore_index=True)
-all_beh = all_beh.drop_duplicates("id")
+
 print("All beh: {}".format(len(all_beh)))
 
 user_ids = pd.unique(all_beh['uid'])
@@ -115,4 +115,5 @@ for u in user_ids:
 user_dict['<pad>'] = {}
 user_dict['<pad>']['idx'] = 0
 
+print('User num', len(user_dict))
 json.dump(user_dict, open('data/user.json', 'w', encoding='utf-8'))
