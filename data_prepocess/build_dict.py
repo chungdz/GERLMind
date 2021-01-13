@@ -48,8 +48,8 @@ news_idx = 2
 for n, title in all_news[['newsid', "title"]].values:
     news_dict[n] = {}
     news_dict[n]['idx'] = news_idx
-    news_dict[n]['clicked'] = []
-    news_dict[n]['neighbor'] = []
+    news_dict[n]['clicked'] = set()
+    news_dict[n]['neighbor'] = set()
     news_idx += 1
 
     tarr = removePunctuation(title).split()
@@ -80,8 +80,8 @@ if cur_len < 10:
     for l in range(10 - cur_len):
         wid_arr.append(0)
 news_dict['<pad>']['title'] = wid_arr[:10]
-news_dict['<pad>']['clicked'] = []
-news_dict['<pad>']['neighbor'] = []
+news_dict['<pad>']['clicked'] = set()
+news_dict['<pad>']['neighbor'] = set()
 ## paddning news for history
 news_dict['<his>']= {}
 news_dict['<his>']['idx'] = 1
@@ -133,6 +133,14 @@ for uid, hist in train_beh[["uid", "hist"]].values:
     for h in his_list:
         user_dict[uid]['clicked'].add(h)
         news_dict[h]['clicked'].add(uid)
+
+# for k, v in news_dict.items():
+#     v['clicked'] = list(v['clicked'])
+#     v['neighbor'] = list(v['neighbor'])
+
+# for k, v in user_dict.items():
+#     v['clicked'] = list(v['clicked'])
+#     v['neighbor'] = list(v['neighbor'])
 
 
 json.dump(user_dict, open('data/user.json', 'w', encoding='utf-8'))
