@@ -77,13 +77,14 @@ class Transformer(nn.Module):
     def forward(self, news_info):
         title = news_info[:, :, 1:]
         topics = news_info[:, :, 0]
+        seq_len = title.size(1)
         
         title = self.word_emb(title)
         title = title.view(-1, self.cfg.max_title_len, self.cfg.word_dim)
         title = self.multi_attention(title)
         title = self.dropout(title)
         title = self.attention(title)
-        title = title.view(-1, self.cfg.max_hist_length, self.cfg.hidden_size)
+        title = title.view(-1, seq_len, self.cfg.hidden_size)
         
         topics = self.topic_emb(topics)
         represent = torch.cat([title, topics], dim=-1)
