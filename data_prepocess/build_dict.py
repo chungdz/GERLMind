@@ -17,7 +17,7 @@ def removePunctuation(text):
     text = re.sub(r'[{}]+'.format(punctuation),'',text)
     return text.strip().lower()
 
-data_path = '../data'
+data_path = 'data'
 
 print("Loading news info")
 f_train_news = os.path.join(data_path, "train/news.tsv")
