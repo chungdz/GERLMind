@@ -48,6 +48,8 @@ news_idx = 2
 for n, title in all_news[['newsid', "title"]].values:
     news_dict[n] = {}
     news_dict[n]['idx'] = news_idx
+    news_dict[n]['clicked'] = []
+    news_dict[n]['neighbor'] = []
     news_idx += 1
 
     tarr = removePunctuation(title).split()
@@ -78,15 +80,17 @@ if cur_len < 10:
     for l in range(10 - cur_len):
         wid_arr.append(0)
 news_dict['<pad>']['title'] = wid_arr[:10]
+news_dict['<pad>']['clicked'] = []
+news_dict['<pad>']['neighbor'] = []
 ## paddning news for history
 news_dict['<his>']= {}
 news_dict['<his>']['idx'] = 1
 news_dict['<his>']['title'] = list(np.zeros(10))
+news_dict['<his>']['clicked'] = set()
+news_dict['<his>']['neighbor'] = set()
 
 print('all word', len(word_dict))
 print('all news', len(news_dict))
-json.dump(news_dict, open('data/news.json', 'w', encoding='utf-8'))
-json.dump(word_dict, open('data/word.json', 'w', encoding='utf-8'))
 
 print("Loading behaviors info")
 f_train_beh = os.path.join(data_path, "train/behaviors.tsv")
@@ -110,10 +114,27 @@ user_idx = 1
 for u in user_ids:
     user_dict[u] = {}
     user_dict[u]['idx'] = user_idx
+    user_dict[u]['clicked'] = set()
+    user_dict[u]['neighbor'] = set()
     user_idx += 1
 
 user_dict['<pad>'] = {}
 user_dict['<pad>']['idx'] = 0
 
 print('User num', len(user_dict))
+
+# build graph dict
+for uid, hist in train_beh[["uid", "hist"]].values:
+    if str(hist) == 'nan':
+        his_list = []
+    else:
+        his_list = str(hist).strip().split()
+    
+    for h in his_list:
+        user_dict[uid]['clicked'].add(h)
+        news_dict[h]['clicked'].add(uid)
+
+
 json.dump(user_dict, open('data/user.json', 'w', encoding='utf-8'))
+json.dump(news_dict, open('data/news.json', 'w', encoding='utf-8'))
+json.dump(word_dict, open('data/word.json', 'w', encoding='utf-8'))
