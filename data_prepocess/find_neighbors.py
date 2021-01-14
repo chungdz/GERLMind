@@ -7,6 +7,7 @@ import random
 import pandas as pd
 import numpy as np
 from data_prepocess.embd import build_word_embeddings
+from tqdm import tqdm
 
 D = 15
 with open('data/user.pkl', 'rb') as f:
@@ -14,7 +15,7 @@ with open('data/user.pkl', 'rb') as f:
 with open('data/news.pkl', 'rb') as f2:
     news_dict = pickle.load(f2)
 
-for n, info in news_dict.items():
+for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor'):
     if len(info['clicked']) < 1:
         continue
     neighbor_news_set = set()
@@ -32,7 +33,7 @@ for n, info in news_dict.items():
         for t in range(D - cur_len):
             info['neighbor'].append(news_dict['<his>']['idx'])
 
-for u, info in user_dict.items():
+for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor'):
     if len(info['clicked']) < 1:
         continue
     neighbor_user_dict = {}
@@ -54,7 +55,7 @@ for u, info in user_dict.items():
             neighbor_user_list.append(user_dict['<pad>']['idx'])
     info['neighbor'] = neighbor_user_list
 
-with open('data/user.pkl', 'wb') as f3:
+with open('data/user_n.pkl', 'wb') as f3:
     user_dict = pickle.dump(user_dict, f3)
-with open('data/news.pkl', 'wb') as f4:
+with open('data/news_n.pkl', 'wb') as f4:
     news_dict = pickle.dump(news_dict, f4)
