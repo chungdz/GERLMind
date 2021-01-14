@@ -18,7 +18,12 @@ with open('data/news.pkl', 'rb') as f2:
 total_neighbor_user = []
 for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor'):
     if len(info['clicked']) < 1:
+        neighbor_user_list = []
+        for t in range(D):
+            neighbor_user_list.append(user_dict['<pad>']['idx'])
+        info['neighbor'] = neighbor_user_list
         continue
+    
     neighbor_user_dict = {}
     for n in info['clicked'][-5:]:
         if len(news_dict[n]['clicked']) > 5:
@@ -46,7 +51,12 @@ print('average neighbor user', np.mean(total_neighbor_user))
 
 for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor'):
     if len(info['clicked']) < 1:
+        neighbor_news_list = []
+        for t in range(D):
+            neighbor_news_list.append(news_dict['<his>']['idx'])
+        info['neighbor'] = neighbor_news_list
         continue
+
     neighbor_news_set = set()
     for u in info['clicked']:
         cur_nlist = user_dict[u]['clicked']
