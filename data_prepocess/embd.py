@@ -29,3 +29,13 @@ def build_word_embeddings(vocab, pretrained_embedding, weights_output_file):
     print("Totally find {} words in pre-trained embeddings.".format(words_found))
     np.save(weights_output_file, weights_matrix)
     print(weights_matrix.shape)
+
+def build_news_embeddings(news_dict, output_file):
+    title_len = len(news_dict['<pad>']['title'])
+    title_matrix = np.zero((len(news_dict), title_len))
+
+    for k, v in news_dict.items():
+        title_matrix[v['idx']] = np.array(v['title'])
+    
+    print('news embedding', title_matrix.shape)
+    np.save(output_file, title_matrix)

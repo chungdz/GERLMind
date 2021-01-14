@@ -5,7 +5,7 @@ import argparse
 import re
 import pandas as pd
 import numpy as np
-from data_prepocess.embd import build_word_embeddings
+from data_prepocess.embd import build_word_embeddings, build_news_embeddings
 
 def parse_ent_list(x):
     if x.strip() == "":
@@ -145,7 +145,8 @@ for uid, hist in train_beh[["uid", "hist"]].values:
         news_dict[h]['clicked'].add(uid)
 
 build_word_embeddings(word_dict, 'data/glove.840B.300d.txt', 'emb.npy')
-pickle.dump(user_dict, open('data/user.json', 'wb'))
-pickle.dump(news_dict, open('data/news.json', 'wb'))
+build_news_embeddings(news_dict, 'data/news_info.npy')
+pickle.dump(user_dict, open('data/user.pkl', 'wb'))
+pickle.dump(news_dict, open('data/news.pkl', 'wb'))
 json.dump(word_dict, open('data/word.json', 'w', encoding='utf-8'))
 json.dump(topic_dict, open('data/topic.json', 'w', encoding='utf-8'))
