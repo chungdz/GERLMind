@@ -15,6 +15,7 @@ with open('data/user.pkl', 'rb') as f:
 with open('data/news.pkl', 'rb') as f2:
     news_dict = pickle.load(f2)
 
+total_neighbor_user = []
 for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor'):
     if len(info['clicked']) < 1:
         continue
@@ -32,6 +33,7 @@ for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor
                 neighbor_user_dict[cur_idx] += 1
     
     cur_len = len(neighbor_user_dict)
+    total_neighbor_user.append(cur_len)
     if cur_len >= D:
         neighbor_user_list = sorted(neighbor_user_dict, key=lambda x: -neighbor_user_dict[x])[:D]
     else:
@@ -39,6 +41,8 @@ for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor
         for t in range(D - cur_len):
             neighbor_user_list.append(user_dict['<pad>']['idx'])
     info['neighbor'] = neighbor_user_list
+
+print('average neighbor user', np.mean(total_neighbor_user))
 
 for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor'):
     if len(info['clicked']) < 1:

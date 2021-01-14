@@ -140,8 +140,8 @@ for uid, hist in train_beh[["uid", "hist"]].values:
     else:
         his_list = str(hist).strip().split()
     
+    user_dict[uid]['clicked'] = his_list
     for h in his_list:
-        user_dict[uid]['clicked'].append(h)
         news_dict[h]['clicked'].add(uid)
 
 build_word_embeddings(word_dict, 'data/glove.840B.300d.txt', 'emb.npy')
