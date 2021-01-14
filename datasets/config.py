@@ -1,13 +1,19 @@
 import json
 import pickle
 
-class Args():
+class ModelConfig():
     def __init__(self):
-        self.word_num = 80000
-        self.user_num = 70000
-        self.news_num = 60000
-        self.topic_num = 6000
-        
+
+        user_dict = pickle.load(open('data/user_n.pkl', 'wb'))
+        news_dict = pickle.load(open('data/news_n.pkl', 'wb'))
+        word_dict = json.load(open('data/word.json', 'w', encoding='utf-8'))
+        topic_dict = json.load(open('data/topic.json', 'w', encoding='utf-8'))
+
+        self.user_num = len(user_dict)
+        self.news_num = len(news_dict)
+        self.word_num = len(word_dict)
+        self.topic_num = len(topic_dict)
+
         self.max_hist_length = 50
         self.max_title_len = 30
         self.neg_count = 4

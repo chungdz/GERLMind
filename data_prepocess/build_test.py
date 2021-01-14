@@ -8,10 +8,16 @@ import numpy as np
 import multiprocessing as mp
 import random
 from tqdm import tqdm
+import time
 
 random.seed(7)
 
 def build_examples(rank, args, df, news_info, user_info, fout):
+    sleep_time = (rank // 10) * 80
+    # print('sleep', sleep_time)
+    time.sleep(sleep_time)
+    data_list = []
+
     news_num = args.neg_num + 1 + args.max_hist_length + args.D * (args.neg_num + 1)
     data_list = []
     for imp_id, hist, imp, user_id in tqdm(df[["id", "hist", "imp", "uid"]].values, total=df.shape[0]):
@@ -30,40 +36,21 @@ def build_examples(rank, args, df, news_info, user_info, fout):
             his_idx_list = his_idx_list[-args.max_hist_length:]
 
         imp_list = str(imp).split(' ')
-        imp_pos_list = []
-        imp_neg_list = []
+        clabel = 0
         for impre in imp_list:
-            arr = impre.split('-')
-
-            label = int(arr[1])
-            if label == 0:
-                imp_neg_list.append((label, arr[0]))
-            elif label == 1:
-                imp_pos_list.append((label, arr[0]))
-            else:
-                raise Exception('label error!')
-        
-        neg_num = len(imp_neg_list)
-        if neg_num < args.neg_num:
-            for i in range(args.neg_num - neg_num):
-                imp_neg_list.append((0, '<pad>'))
-        
-        for p in imp_pos_list:
-            sampled = random.sample(imp_neg_list, args.neg_num)
+            label = clabel
+            clabel = clabel ^ 1
+            
             new_row = []
             new_row.append(int(imp_id))
-            new_row.append(0)
+            new_row.append(label)
             # user idx
             new_row.append(user_info[user_id]['idx'])
             new_row += user_info[user_id]['neighbor']
             # news idx
-            new_row.append(news_info[p[1]]['idx'])
-            for neg in sampled:
-                new_row.append(news_info[neg[1]]['idx'])
+            new_row.append(news_info[impre]['idx'])
             new_row += his_idx_list
-            new_row += news_info[p[1]]['neighbor']
-            for neg in sampled:
-                new_row += news_info[neg[1]]['neighbor']
+            new_row += news_info[impre]['neighbor']
             assert(len(new_row) == 2 + 1 + args.D + news_num)
             data_list.append(new_row)
     
@@ -83,7 +70,7 @@ def main(args):
 
     processes = []
     for i in range(args.processes):
-        output_path = os.path.join("data", args.fout,  "train-{}.npy".format(i))
+        output_path = os.path.join("data", args.fout,  "test-{}.npy".format(i))
         p = mp.Process(target=build_examples, args=(
             i, args, dfs[i], news_info, user_info, output_path))
         p.start()
@@ -96,7 +83,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # Path options.
-    parser.add_argument("--fsamples", default="train/behaviors.tsv", type=str,
+    parser.add_argument("--fsamples", default="test/behaviors.tsv", type=str,
                         help="Path of the training samples file.")
     parser.add_argument("--fout", default="raw", type=str,
                         help="Path of the output dir.")
@@ -104,7 +91,7 @@ if __name__ == "__main__":
                         help="Max length of the click history of the user.")
     parser.add_argument("--D", default=15, type=int,
                         help="neighbor num")
-    parser.add_argument("--neg_num", default=4, type=int)
+    parser.add_argument("--neg_num", default=0, type=int)
     parser.add_argument("--processes", default=40, type=int,
                         help="Processes number")
 
