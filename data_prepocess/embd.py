@@ -32,7 +32,7 @@ def build_word_embeddings(vocab, pretrained_embedding, weights_output_file):
 
 def build_news_embeddings(news_dict, output_file):
     title_len = len(news_dict['<pad>']['title'])
-    title_matrix = np.zero((len(news_dict), title_len))
+    title_matrix = np.zeros((len(news_dict), title_len))
 
     for k, v in news_dict.items():
         title_matrix[v['idx']] = np.array(v['title'])

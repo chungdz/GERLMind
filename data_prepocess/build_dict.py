@@ -53,7 +53,7 @@ for n, title, topic in all_news[['newsid', "title", "subcate"]].values:
     news_dict[n] = {}
     news_dict[n]['idx'] = news_idx
     news_dict[n]['clicked'] = set()
-    news_dict[n]['neighbor'] = set()
+    news_dict[n]['neighbor'] = []
     news_idx += 1
 
     tarr = removePunctuation(title).split()
@@ -88,13 +88,13 @@ if cur_len < max_title_len:
         wid_arr.append(0)
 news_dict['<pad>']['title'] = [0] + wid_arr[:max_title_len]
 news_dict['<pad>']['clicked'] = set()
-news_dict['<pad>']['neighbor'] = set()
+news_dict['<pad>']['neighbor'] = []
 ## paddning news for history
 news_dict['<his>']= {}
 news_dict['<his>']['idx'] = 1
 news_dict['<his>']['title'] = [0] + list(np.zeros(max_title_len))
 news_dict['<his>']['clicked'] = set()
-news_dict['<his>']['neighbor'] = set()
+news_dict['<his>']['neighbor'] = []
 
 print('all word', len(word_dict))
 print('all news', len(news_dict))
@@ -123,13 +123,13 @@ for u in user_ids:
     user_dict[u] = {}
     user_dict[u]['idx'] = user_idx
     user_dict[u]['clicked'] = set()
-    user_dict[u]['neighbor'] = set()
+    user_dict[u]['neighbor'] = []
     user_idx += 1
 
 user_dict['<pad>'] = {}
 user_dict['<pad>']['idx'] = 0
 user_dict['<pad>']['clicked'] = set()
-user_dict['<pad>']['neighbor'] = set()
+user_dict['<pad>']['neighbor'] = []
 
 print('User num', len(user_dict))
 

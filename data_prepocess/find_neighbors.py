@@ -20,4 +20,8 @@ for n, info in news_dict.items():
         cur_nlist = user_dict[u]['clicked']
         for neighbor_n in cur_nlist:
             neighbor_news_set.add(neighbor_n)
+    cur_len = len(neighbor_news_set)
+    neighbor_news_list = list(neighbor_news_set)
+    if cur_len >= D:
+        info['neighbor']
     info['neighbor'] = neighbor_news_set
