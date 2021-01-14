@@ -122,13 +122,13 @@ user_idx = 1
 for u in user_ids:
     user_dict[u] = {}
     user_dict[u]['idx'] = user_idx
-    user_dict[u]['clicked'] = set()
+    user_dict[u]['clicked'] = []
     user_dict[u]['neighbor'] = []
     user_idx += 1
 
 user_dict['<pad>'] = {}
 user_dict['<pad>']['idx'] = 0
-user_dict['<pad>']['clicked'] = set()
+user_dict['<pad>']['clicked'] = []
 user_dict['<pad>']['neighbor'] = []
 
 print('User num', len(user_dict))
@@ -141,7 +141,7 @@ for uid, hist in train_beh[["uid", "hist"]].values:
         his_list = str(hist).strip().split()
     
     for h in his_list:
-        user_dict[uid]['clicked'].add(h)
+        user_dict[uid]['clicked'].append(h)
         news_dict[h]['clicked'].add(uid)
 
 build_word_embeddings(word_dict, 'data/glove.840B.300d.txt', 'emb.npy')

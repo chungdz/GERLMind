@@ -15,6 +15,31 @@ with open('data/user.pkl', 'rb') as f:
 with open('data/news.pkl', 'rb') as f2:
     news_dict = pickle.load(f2)
 
+for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor'):
+    if len(info['clicked']) < 1:
+        continue
+    neighbor_user_dict = {}
+    for n in info['clicked'][-5:]:
+        if len(news_dict[n]['clicked']) > 5:
+            cur_ulist = random.sample(news_dict[n]['clicked'], 5)
+        else:
+            cur_ulist = news_dict[n]['clicked']
+        for neighbor_u in cur_ulist:
+            cur_idx = user_dict[neighbor_u]['idx']
+            if cur_idx not in neighbor_user_dict:
+                neighbor_user_dict[cur_idx] = 1
+            else:
+                neighbor_user_dict[cur_idx] += 1
+    
+    cur_len = len(neighbor_user_dict)
+    if cur_len >= D:
+        neighbor_user_list = sorted(neighbor_user_dict, key=lambda x: -neighbor_user_dict[x])[:D]
+    else:
+        neighbor_user_list = list(neighbor_user_dict)
+        for t in range(D - cur_len):
+            neighbor_user_list.append(user_dict['<pad>']['idx'])
+    info['neighbor'] = neighbor_user_list
+
 for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor'):
     if len(info['clicked']) < 1:
         continue
@@ -32,28 +57,6 @@ for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor
         info['neighbor'] = neighbor_news_list
         for t in range(D - cur_len):
             info['neighbor'].append(news_dict['<his>']['idx'])
-
-for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor'):
-    if len(info['clicked']) < 1:
-        continue
-    neighbor_user_dict = {}
-    for n in info['clicked']:
-        cur_ulist = news_dict[n]['clicked']
-        for neighbor_u in cur_ulist:
-            cur_idx = user_dict[neighbor_u]['idx']
-            if cur_idx not in neighbor_user_dict:
-                neighbor_user_dict[cur_idx] = 1
-            else:
-                neighbor_user_dict[cur_idx] += 1
-    
-    cur_len = len(neighbor_user_dict)
-    if cur_len >= D:
-        neighbor_user_list = sorted(neighbor_user_dict, key=lambda x: -neighbor_user_dict[x])[:D]
-    else:
-        neighbor_user_list = list(neighbor_user_dict)
-        for t in range(D - cur_len):
-            neighbor_user_list.append(user_dict['<pad>']['idx'])
-    info['neighbor'] = neighbor_user_list
 
 with open('data/user_n.pkl', 'wb') as f3:
     user_dict = pickle.dump(user_dict, f3)
