@@ -17,12 +17,10 @@ def build_word_embeddings(vocab, pretrained_embedding, weights_output_file):
             error_line += 1
     print("Error lines: {}".format(error_line))
 
-    # embed_size = len(emb_dict.values()[0])
-    # build embedding weights for model
     weights_matrix = np.zeros((len(vocab), embed_size))
     words_found = 0
 
-    for k, v in enumerate(vocab.items()):
+    for k, v in vocab.items():
         try:
             weights_matrix[v] = emb_dict[k]
             words_found += 1
