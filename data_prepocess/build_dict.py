@@ -18,6 +18,7 @@ def removePunctuation(text):
     return text.strip().lower()
 
 data_path = 'data'
+max_title_len = 30
 
 print("Loading news info")
 f_train_news = os.path.join(data_path, "train/news.tsv")
@@ -43,9 +44,11 @@ all_news = all_news.drop_duplicates("newsid")
 
 news_dict = {}
 word_dict = {'<pad>': 0}
+topic_dict = {'<pad>': 0}
 word_idx = 1
 news_idx = 2
-for n, title in all_news[['newsid', "title"]].values:
+topic_idx = 1
+for n, title, topic in all_news[['newsid', "title", "cate"]].values:
     news_dict[n] = {}
     news_dict[n]['idx'] = news_idx
     news_dict[n]['clicked'] = set()
@@ -60,10 +63,13 @@ for n, title in all_news[['newsid', "title"]].values:
             word_idx += 1
         wid_arr.append(word_dict[t])
     cur_len = len(wid_arr)
-    if cur_len < 10:
-        for l in range(10 - cur_len):
+    if cur_len < max_title_len:
+        for l in range(max_title_len - cur_len):
             wid_arr.append(0)
-    news_dict[n]['title'] = wid_arr[:10]
+    if topic not in topic_dict:
+        topic_dict[topic] = topic_idx
+        topic_idx += 1
+    news_dict[n]['title'] = [topic_idx] + wid_arr[:max_title_len]
 
 ## paddning news for impression
 news_dict['<pad>']= {}
@@ -76,21 +82,22 @@ for t in tarr:
         word_idx += 1
     wid_arr.append(word_dict[t])
 cur_len = len(wid_arr)
-if cur_len < 10:
-    for l in range(10 - cur_len):
+if cur_len < max_title_len:
+    for l in range(max_title_len - cur_len):
         wid_arr.append(0)
-news_dict['<pad>']['title'] = wid_arr[:10]
+news_dict['<pad>']['title'] = [0] + wid_arr[:max_title_len]
 news_dict['<pad>']['clicked'] = set()
 news_dict['<pad>']['neighbor'] = set()
 ## paddning news for history
 news_dict['<his>']= {}
 news_dict['<his>']['idx'] = 1
-news_dict['<his>']['title'] = list(np.zeros(10))
+news_dict['<his>']['title'] = [0] + list(np.zeros(max_title_len))
 news_dict['<his>']['clicked'] = set()
 news_dict['<his>']['neighbor'] = set()
 
 print('all word', len(word_dict))
 print('all news', len(news_dict))
+print('all topics', len(topic_dict))
 
 print("Loading behaviors info")
 f_train_beh = os.path.join(data_path, "train/behaviors.tsv")
@@ -134,15 +141,16 @@ for uid, hist in train_beh[["uid", "hist"]].values:
         user_dict[uid]['clicked'].add(h)
         news_dict[h]['clicked'].add(uid)
 
-# for k, v in news_dict.items():
-#     v['clicked'] = list(v['clicked'])
-#     v['neighbor'] = list(v['neighbor'])
+for k, v in news_dict.items():
+    v['clicked'] = list(v['clicked'])
+    v['neighbor'] = list(v['neighbor'])
 
-# for k, v in user_dict.items():
-#     v['clicked'] = list(v['clicked'])
-#     v['neighbor'] = list(v['neighbor'])
+for k, v in user_dict.items():
+    v['clicked'] = list(v['clicked'])
+    v['neighbor'] = list(v['neighbor'])
 
 
 json.dump(user_dict, open('data/user.json', 'w', encoding='utf-8'))
 json.dump(news_dict, open('data/news.json', 'w', encoding='utf-8'))
 json.dump(word_dict, open('data/word.json', 'w', encoding='utf-8'))
+json.dump(topic_dict, open('data/topic.json', 'w', encoding='utf-8'))
