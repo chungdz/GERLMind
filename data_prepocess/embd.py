@@ -22,11 +22,12 @@ def build_word_embeddings(vocab, pretrained_embedding, weights_output_file):
     weights_matrix = np.zeros((len(vocab), embed_size))
     words_found = 0
 
-    for i, word in enumerate(vocab.itos):
+    for k, v in enumerate(vocab.items()):
         try:
-            weights_matrix[i] = emb_dict[word]
+            weights_matrix[v] = emb_dict[k]
             words_found += 1
         except KeyError:
-            weights_matrix[i] = np.random.normal(size=(embed_size,))
+            weights_matrix[v] = np.random.normal(size=(embed_size,))
     print("Totally find {} words in pre-trained embeddings.".format(words_found))
     np.save(weights_output_file, weights_matrix)
+    print(weights_matrix.shape)

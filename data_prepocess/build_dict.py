@@ -5,6 +5,7 @@ import argparse
 import re
 import pandas as pd
 import numpy as np
+from data_prepocess.embd import build_word_embeddings
 
 def parse_ent_list(x):
     if x.strip() == "":
@@ -48,7 +49,7 @@ topic_dict = {'<pad>': 0}
 word_idx = 1
 news_idx = 2
 topic_idx = 1
-for n, title, topic in all_news[['newsid', "title", "cate"]].values:
+for n, title, topic in all_news[['newsid', "title", "subcate"]].values:
     news_dict[n] = {}
     news_dict[n]['idx'] = news_idx
     news_dict[n]['clicked'] = set()
@@ -127,6 +128,8 @@ for u in user_ids:
 
 user_dict['<pad>'] = {}
 user_dict['<pad>']['idx'] = 0
+user_dict['<pad>']['clicked'] = set()
+user_dict['<pad>']['neighbor'] = set()
 
 print('User num', len(user_dict))
 
@@ -141,16 +144,8 @@ for uid, hist in train_beh[["uid", "hist"]].values:
         user_dict[uid]['clicked'].add(h)
         news_dict[h]['clicked'].add(uid)
 
-for k, v in news_dict.items():
-    v['clicked'] = list(v['clicked'])
-    v['neighbor'] = list(v['neighbor'])
-
-for k, v in user_dict.items():
-    v['clicked'] = list(v['clicked'])
-    v['neighbor'] = list(v['neighbor'])
-
-
-json.dump(user_dict, open('data/user.json', 'w', encoding='utf-8'))
-json.dump(news_dict, open('data/news.json', 'w', encoding='utf-8'))
+build_word_embeddings(word_dict, 'data/glove.840B.300d.txt', 'emb.npy')
+pickle.dump(user_dict, open('data/user.json', 'wb'))
+pickle.dump(news_dict, open('data/news.json', 'wb'))
 json.dump(word_dict, open('data/word.json', 'w', encoding='utf-8'))
 json.dump(topic_dict, open('data/topic.json', 'w', encoding='utf-8'))
