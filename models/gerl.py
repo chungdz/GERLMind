@@ -51,8 +51,8 @@ class GERL(nn.Module):
         ue_two = self.neighbor_user_att(neighbor_user)
         # print(ut_one.size(), ue_one.size(), ue_two.size())
 
-        user_represent = torch.cat([ut_one, ue_one, ue_two], dim=-1)
         news_represent = torch.cat([nt_two, ne_two, nt_one], dim=-1)
+        user_represent = torch.cat([ue_one, ue_two, ut_one], dim=-1)
 
         user_represent = user_represent.repeat(1, neg_num + 1).view(-1, neg_num + 1, news_represent.size(-1))
         similarity = torch.sum(user_represent * news_represent, dim=-1)
