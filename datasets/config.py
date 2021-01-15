@@ -4,10 +4,10 @@ import pickle
 class ModelConfig():
     def __init__(self):
 
-        user_dict = pickle.load(open('data/user_n.pkl', 'wb'))
-        news_dict = pickle.load(open('data/news_n.pkl', 'wb'))
-        word_dict = json.load(open('data/word.json', 'w', encoding='utf-8'))
-        topic_dict = json.load(open('data/topic.json', 'w', encoding='utf-8'))
+        user_dict = pickle.load(open('data/user_n.pkl', 'rb'))
+        news_dict = pickle.load(open('data/news_n.pkl', 'rb'))
+        word_dict = json.load(open('data/word.json', 'r', encoding='utf-8'))
+        topic_dict = json.load(open('data/topic.json', 'r', encoding='utf-8'))
 
         self.user_num = len(user_dict)
         self.news_num = len(news_dict)

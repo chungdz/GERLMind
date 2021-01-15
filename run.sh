@@ -12,3 +12,5 @@ python -m data_prepocess.resplit --filenum 10
 CUDA_VISIBLE_DEVICES=0,1,2,3 python training.py --gpus=4 --epoch=4
 CUDA_VISIBLE_DEVICES=0,1,2,3 python validate.py --gpus=4 --epoch=0 --filenum=40
 
+python -m data_prepocess.find_neighbors
+CUDA_VISIBLE_DEVICES=1,2,3,7 python training.py --gpus=4 --epoch=4
