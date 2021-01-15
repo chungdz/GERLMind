@@ -18,8 +18,15 @@ def removePunctuation(text):
     text = re.sub(r'[{}]+'.format(punctuation),'',text)
     return text.strip().lower()
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--title_len", default=10, type=int,
+                    help="Max length of the title.")
+
+args = parser.parse_args()
+
 data_path = 'data'
-max_title_len = 30
+max_title_len = args.titel_len
 
 print("Loading news info")
 f_train_news = os.path.join(data_path, "train/news.tsv")
