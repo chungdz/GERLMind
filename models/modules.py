@@ -72,8 +72,7 @@ class Transformer(nn.Module):
         self.attention = AttentionLayer(cfg.hidden_size)
         self.multi_attention = SelfAttention(cfg.word_dim, cfg.head_num, cfg.head_dim)
         self.topic_emb = nn.Embedding(cfg.topic_num, cfg.topic_dim)
-        # self.word_emb = nn.Embedding(cfg.word_num, cfg.word_dim)
-        self.word_emb = nn.Embedding.from_pretrained(torch.LongTensor(np.load('data/emb.npy')))
+        self.word_emb = nn.Embedding.from_pretrained(torch.FloatTensor(np.load('data/emb.npy')))
         self.dropout = nn.Dropout(cfg.dropout)
 
     def forward(self, news_info):
