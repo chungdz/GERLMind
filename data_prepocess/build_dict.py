@@ -26,7 +26,7 @@ parser.add_argument("--title_len", default=10, type=int,
 args = parser.parse_args()
 
 data_path = 'data'
-max_title_len = args.titel_len
+max_title_len = args.title_len
 
 print("Loading news info")
 f_train_news = os.path.join(data_path, "train/news.tsv")
