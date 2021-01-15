@@ -144,7 +144,7 @@ for uid, hist in train_beh[["uid", "hist"]].values:
     for h in his_list:
         news_dict[h]['clicked'].add(uid)
 
-build_word_embeddings(word_dict, 'data/glove.840B.300d.txt', 'emb.npy')
+build_word_embeddings(word_dict, 'data/glove.840B.300d.txt', 'data/emb.npy')
 build_news_embeddings(news_dict, 'data/news_info.npy')
 pickle.dump(user_dict, open('data/user.pkl', 'wb'))
 pickle.dump(news_dict, open('data/news.pkl', 'wb'))

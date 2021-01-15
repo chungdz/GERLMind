@@ -161,7 +161,7 @@ def validate(cfg, epoch, model, device, rank, valid_data_loader, fast_dev=False,
             data = data.to(device)
 
             # 1. Forward
-            pred = model(data[:, 2:], mode='test').squeeze()
+            pred = model(data[:, 2:], test_mode=True).squeeze()
 
             preds += pred.cpu().numpy().tolist()
             truths += data[:, 1].long().cpu().numpy().tolist()
@@ -187,7 +187,7 @@ def init_processes(cfg, local_rank, vocab, dataset, valid_dataset, news_title, f
 
     device = torch.device("cuda:{}".format(local_rank))
 
-    fn(cfg, local_rank, device, finished, train_dataset_path=dataset, valid_dataset=valid_dataset, news_title=news_title)
+    fn(cfg, local_rank, device, finished, train_dataset_path=dataset, valid_dataset_file=valid_dataset, news_title=news_title)
 
 
 def split_dataset(dataset, gpu_count):
