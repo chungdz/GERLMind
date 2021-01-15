@@ -70,7 +70,7 @@ for n, title, topic in all_news[['newsid', "title", "subcate"]].values:
     if topic not in topic_dict:
         topic_dict[topic] = topic_idx
         topic_idx += 1
-    news_dict[n]['title'] = [topic_idx] + wid_arr[:max_title_len]
+    news_dict[n]['title'] = [topic_dict[topic]] + wid_arr[:max_title_len]
 
 ## paddning news for impression
 news_dict['<pad>']= {}

@@ -14,7 +14,6 @@ random.seed(7)
 
 def build_examples(rank, args, df, news_info, user_info, fout):
     sleep_time = (rank // 10) * 80
-    # print('sleep', sleep_time)
     time.sleep(sleep_time)
     data_list = []
 

@@ -9,10 +9,11 @@ class RecoData(Dataset):
         self.embfile = torch.LongTensor(embfile)
 
     def __getitem__(self, index):
-        news_idx = self[index][1 + self.cfg.D:]
+        news_idx = self.file[index, 2 + 1 + self.cfg.D:]
         news_title = self.embfile[news_idx].view(-1)
 
-        return torch.cat([self[index], news_title])
+        return torch.cat([self.file[index], news_title])
  
     def __len__(self):
-        return self.file.shape[0]
+        return self.file.size(0)
+
