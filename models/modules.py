@@ -13,7 +13,7 @@ class AttentionLayer(nn.Module):
             nn.Tanh()
         )
         
-        self.gate_layer = nn.Linear(hidden_size, 1)
+        self.gate_layer = nn.Linear(hidden_size, 1, bias=False)
 
     def forward(self, seqs, seq_masks=None):
 
