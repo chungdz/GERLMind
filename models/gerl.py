@@ -7,7 +7,8 @@ class GERL(nn.Module):
     def __init__(self, cfg):
         super(GERL, self).__init__()
         self.cfg = cfg
-        self.transformer = Transformer(cfg)
+        self.news_transformer = Transformer(cfg)
+        self.neighbor_transformer = Transformer(cfg)
         self.user_emb = nn.Embedding(cfg.user_num, cfg.ID_dim)
         self.news_emb = nn.Embedding(cfg.news_num, cfg.ID_dim)
         self.his_news_att = AttentionLayer(cfg.hidden_size * 2)
@@ -36,10 +37,14 @@ class GERL(nn.Module):
         his_news_ID = all_news_ID[:, neg_num + 1: neg_num + 1 + self.cfg.max_hist_length, :]
         neighbor_news_ID = all_news_ID[:, neg_num + 1 + self.cfg.max_hist_length:, :].reshape(-1, self.cfg.D, self.cfg.ID_dim)
         
-        all_news_info = self.transformer(all_news_info)
+        # all_news_info = self.transformer(all_news_info)
         candidcates_news_info = all_news_info[:, :neg_num + 1, :]
         his_news_info = all_news_info[:, neg_num + 1: neg_num + 1 + self.cfg.max_hist_length, :]
-        neighbor_news_info = all_news_info[:, neg_num + 1 + self.cfg.max_hist_length:, :].reshape(-1, self.cfg.D, self.cfg.hidden_size * 2)
+        neighbor_news_info = all_news_info[:, neg_num + 1 + self.cfg.max_hist_length:, :]
+
+        candidcates_news_info = self.news_transformer(candidcates_news_info)
+        his_news_info = self.news_transformer(his_news_info)
+        neighbor_news_info = self.neighbor_transformer(neighbor_news_info).reshape(-1, self.cfg.D, self.cfg.hidden_size * 2)
 
         # calculate six represents
         nt_one = candidcates_news_info

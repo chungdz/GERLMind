@@ -20,7 +20,7 @@ def removePunctuation(text):
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--title_len", default=10, type=int,
+parser.add_argument("--title_len", default=30, type=int,
                     help="Max length of the title.")
 
 args = parser.parse_args()
