@@ -53,7 +53,7 @@ for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor
     if len(info['clicked']) < 1:
         neighbor_news_list = []
         for t in range(D):
-            neighbor_news_list.append(news_dict['<his>']['idx'])
+            neighbor_news_list.append(news_dict['<neighbor>']['idx'])
         info['neighbor'] = neighbor_news_list
         continue
 
@@ -70,7 +70,7 @@ for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor
     else:
         info['neighbor'] = neighbor_news_list
         for t in range(D - cur_len):
-            info['neighbor'].append(news_dict['<his>']['idx'])
+            info['neighbor'].append(news_dict['<neighbor>']['idx'])
 
 with open('data/user_n.pkl', 'wb') as f3:
     user_dict = pickle.dump(user_dict, f3)

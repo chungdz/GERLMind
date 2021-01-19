@@ -54,7 +54,7 @@ news_dict = {}
 word_dict = {'<pad>': 0}
 topic_dict = {'<pad>': 0}
 word_idx = 1
-news_idx = 2
+news_idx = 3
 topic_idx = 1
 for n, title, topic in all_news[['newsid', "title", "subcate"]].values:
     news_dict[n] = {}
@@ -96,6 +96,23 @@ if cur_len < max_title_len:
 news_dict['<pad>']['title'] = [0] + wid_arr[:max_title_len]
 news_dict['<pad>']['clicked'] = set()
 news_dict['<pad>']['neighbor'] = []
+## padding neighbor news
+news_dict['<neighbor>']= {}
+news_dict['<neighbor>']['idx'] = 2
+tarr = removePunctuation("This is the neighbor pad news").split()
+wid_arr = []
+for t in tarr:
+    if t not in word_dict:
+        word_dict[t] = word_idx
+        word_idx += 1
+    wid_arr.append(word_dict[t])
+cur_len = len(wid_arr)
+if cur_len < max_title_len:
+    for l in range(max_title_len - cur_len):
+        wid_arr.append(0)
+news_dict['<neighbor>']['title'] = [0] + wid_arr[:max_title_len]
+news_dict['<neighbor>']['clicked'] = set()
+news_dict['<neighbor>']['neighbor'] = []
 ## paddning news for history
 news_dict['<his>']= {}
 news_dict['<his>']['idx'] = 1
