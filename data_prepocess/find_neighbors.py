@@ -15,14 +15,13 @@ with open('data/user.pkl', 'rb') as f:
 with open('data/news.pkl', 'rb') as f2:
     news_dict = pickle.load(f2)
 
-parser.add_argument("--user", default=True, type=bool,
-                    help=" find neighbor user?")
-arser.add_argument("--news", default=True, type=bool,
-                    help="find neighbor news?")
+parser = argparse.ArgumentParser()
+parser.add_argument("--user", default=None, help=" find neighbor user?")
+parser.add_argument("--news", default=None, help="find neighbor news?")
 
 args = parser.parse_args()
 
-if args.user:
+if args.user is not None:
 
     total_neighbor_user = []
     for u, info in tqdm(user_dict.items(), total=len(user_dict), desc='user neighbor'):
@@ -60,7 +59,7 @@ if args.user:
     with open('data/user_n.pkl', 'wb') as f3:
         user_dict = pickle.dump(user_dict, f3)
 
-if args.news:
+if args.news is not None:
 
     for n, info in tqdm(news_dict.items(), total=len(news_dict), desc='news neighbor'):
         if len(info['clicked']) < 1:
