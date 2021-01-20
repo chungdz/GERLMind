@@ -65,7 +65,7 @@ if args.news is not None:
         if len(info['clicked']) < 1:
             neighbor_news_list = []
             for t in range(D):
-                neighbor_news_list.append(news_dict['<neighbor>']['idx'])
+                neighbor_news_list.append(news_dict['<his>']['idx'])
             info['neighbor'] = neighbor_news_list
             continue
 
@@ -82,7 +82,7 @@ if args.news is not None:
         else:
             info['neighbor'] = neighbor_news_list
             for t in range(D - cur_len):
-                info['neighbor'].append(news_dict['<neighbor>']['idx'])
+                info['neighbor'].append(news_dict['<his>']['idx'])
 
 
     with open('data/news_n.pkl', 'wb') as f4:
