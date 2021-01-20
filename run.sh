@@ -16,9 +16,9 @@ python -m data_prepocess.find_neighbors
 CUDA_VISIBLE_DEVICES=1,2,3,7 python training.py --gpus=4 --epoch=4
 
 python -m data_prepocess.build_dict --title_len=30
-python -m data_prepocess.find_neighbors
+python -m data_prepocess.find_neighbors --news=True
 python -m data_prepocess.build_train --processes=10 --max_hist_length=50
 python -m data_prepocess.build_valid --processes=10 --fsamples=valid/behaviors.small.tsv --max_hist_length=50
-python -m data_prepocess.build_test --processes=40 --max_hist_length=50
 python -m data_prepocess.resplit --filenum 1 --processes 2
-CUDA_VISIBLE_DEVICES=0,1 python training.py --gpus=2 --epoch=10
+python -m data_prepocess.build_test --processes=40 --max_hist_length=50
+CUDA_VISIBLE_DEVICES=1,2 python training.py --gpus=2 --epoch=10
